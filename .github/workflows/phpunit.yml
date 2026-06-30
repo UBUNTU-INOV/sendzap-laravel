@@ -11,15 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # Laravel 10 and 11 are past their security-support window and have no
+      # patched laravel/framework release for current advisories, so Composer's
+      # audit refuses to install them. Only test the actively maintained majors
+      # here; illuminate/support's own composer.json constraint still allows
+      # 10.x/11.x for consumers (see "require" in composer.json).
       matrix:
-        php: [ '8.1', '8.2', '8.3', '8.4' ]
-        laravel: [ '10.*', '11.*', '12.*', '13.*' ]
-        exclude:
-          - php: '8.1'
-            laravel: '12.*'
-          - php: '8.1'
-            laravel: '13.*'
+        include:
           - php: '8.2'
+            testbench: '^10.0'
+            laravel: '12.*'
+          - php: '8.3'
+            testbench: '^10.0'
+            laravel: '12.*'
+          - php: '8.4'
+            testbench: '^10.0'
+            laravel: '12.*'
+          - php: '8.3'
+            testbench: '^11.0'
+            laravel: '13.*'
+          - php: '8.4'
+            testbench: '^11.0'
             laravel: '13.*'
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
@@ -36,7 +48,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "illuminate/support:${{ matrix.laravel }}" --no-update --no-interaction
+          composer require "orchestra/testbench:${{ matrix.testbench }}" --dev --no-update --no-interaction
           composer update --prefer-dist --no-progress --prefer-stable
 
       - name: Run tests

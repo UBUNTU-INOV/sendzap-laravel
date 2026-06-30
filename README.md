@@ -10,6 +10,18 @@
 
 A clean and powerful Laravel SDK to interact with the **SendZap WhatsApp API**. Effortlessly manage instances, send text, media, bulk messages, buttons, and carousels directly from your Laravel application.
 
+## Requirements
+
+- PHP 8.1+
+- Laravel 10, 11, 12, or 13
+
+CI only runs the test suite against Laravel 12 and 13, since 10 and 11 are
+past their official security-support window and have no patched
+`laravel/framework` release to test against. The SDK itself only depends on
+`illuminate/support` (service container, facades), not the routing/validation
+layer affected by those advisories, so it should keep working fine on 10/11
+— just without automated coverage.
+
 ---
 
 ## Installation and Usage
