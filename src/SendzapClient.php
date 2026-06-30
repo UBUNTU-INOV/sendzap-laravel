@@ -3,29 +3,33 @@
 namespace Sendzap\Laravel;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use Sendzap\Laravel\Exceptions\MissingInstanceIdException;
+use GuzzleHttp\Exception\RequestException;
+use Sendzap\Laravel\Contracts\SendzapClientContract;
 use Sendzap\Laravel\Exceptions\ApiException;
+use Sendzap\Laravel\Exceptions\MissingInstanceIdException;
 
-class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
+class SendzapClient implements SendzapClientContract
 {
     protected string $apiKey;
+
     protected string $baseUrl;
+
     protected ?string $defaultInstanceId;
+
     protected Client $httpClient;
 
-    public function __construct(string $apiKey, string $baseUrl, ?string $defaultInstanceId = null)
+    public function __construct(string $apiKey, string $baseUrl, ?string $defaultInstanceId = null, ?Client $httpClient = null)
     {
         $this->apiKey = $apiKey;
         $this->baseUrl = rtrim($baseUrl, '/');
         $this->defaultInstanceId = $defaultInstanceId;
-        
-        $this->httpClient = new Client([
-            'base_uri' => $this->baseUrl . '/',
+
+        $this->httpClient = $httpClient ?? new Client([
+            'base_uri' => $this->baseUrl.'/',
             'headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
+                'Authorization' => 'Bearer '.$this->apiKey,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
             ],
         ]);
     }
@@ -36,6 +40,7 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
     public function setInstanceId(string $instanceId): self
     {
         $this->defaultInstanceId = $instanceId;
+
         return $this;
     }
 
@@ -45,11 +50,11 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
     protected function getInstanceId(?string $instanceId = null): string
     {
         $id = $instanceId ?? $this->defaultInstanceId;
-        
-        if (!$id) {
-            throw new MissingInstanceIdException("No WhatsApp Instance ID provided. Set it in config or pass it as an argument.");
+
+        if (! $id) {
+            throw new MissingInstanceIdException('No WhatsApp Instance ID provided. Set it in config or pass it as an argument.');
         }
-        
+
         return $id;
     }
 
@@ -60,8 +65,9 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
     {
         try {
             $response = $this->httpClient->request($method, $uri, $options);
+
             return json_decode($response->getBody()->getContents(), true) ?? [];
-        } catch (GuzzleException $e) {
+        } catch (RequestException $e) {
             $response = $e->getResponse();
             if ($response) {
                 $body = json_decode($response->getBody()->getContents(), true);
@@ -72,7 +78,7 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
     }
 
     /* -------------------------------------------------------------------------- */
-    /*                              MESSAGING API                                 */
+    /*                              MESSAGING API */
     /* -------------------------------------------------------------------------- */
 
     /**
@@ -83,9 +89,9 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
         return $this->request('POST', 'send-message', [
             'json' => [
                 'instance_id' => $this->getInstanceId($instanceId),
-                'to'          => $to,
-                'message'     => $message,
-            ]
+                'to' => $to,
+                'message' => $message,
+            ],
         ]);
     }
 
@@ -103,12 +109,12 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
         return $this->request('POST', 'send-media', [
             'json' => array_filter([
                 'instance_id' => $this->getInstanceId($instanceId),
-                'to'          => $to,
-                'media_url'   => $mediaUrl,
-                'type'        => $type,
-                'caption'     => $caption,
-                'file_name'   => $fileName,
-            ])
+                'to' => $to,
+                'media_url' => $mediaUrl,
+                'type' => $type,
+                'caption' => $caption,
+                'file_name' => $fileName,
+            ]),
         ]);
     }
 
@@ -127,13 +133,13 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
         return $this->request('POST', 'send-bulk', [
             'json' => array_filter([
                 'instance_id' => $this->getInstanceId($instanceId),
-                'messages'    => $messages,
-                'media_url'   => $mediaUrl,
-                'type'        => $type,
-                'caption'     => $caption,
-                'file_name'   => $fileName,
-                'delay'       => $delay,
-            ])
+                'messages' => $messages,
+                'media_url' => $mediaUrl,
+                'type' => $type,
+                'caption' => $caption,
+                'file_name' => $fileName,
+                'delay' => $delay,
+            ]),
         ]);
     }
 
@@ -145,8 +151,8 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
         return $this->request('POST', 'check-number', [
             'json' => array_filter([
                 'instance_id' => $instanceId ?? $this->defaultInstanceId,
-                'number'      => $number,
-            ])
+                'number' => $number,
+            ]),
         ]);
     }
 
@@ -157,11 +163,11 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
     {
         return $this->request('POST', 'schedule-message', [
             'json' => [
-                'instance_id'  => $this->getInstanceId($instanceId),
-                'to'           => $to,
-                'message'      => $message,
+                'instance_id' => $this->getInstanceId($instanceId),
+                'to' => $to,
+                'message' => $message,
                 'scheduled_at' => $scheduledAt,
-            ]
+            ],
         ]);
     }
 
@@ -177,12 +183,12 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
     ): array {
         return $this->request('POST', 'send-contact', [
             'json' => array_filter([
-                'instance_id'    => $this->getInstanceId($instanceId),
-                'to'             => $to,
-                'contact_name'   => $contactName,
+                'instance_id' => $this->getInstanceId($instanceId),
+                'to' => $to,
+                'contact_name' => $contactName,
                 'contact_number' => $contactNumber,
-                'organization'   => $organization,
-            ])
+                'organization' => $organization,
+            ]),
         ]);
     }
 
@@ -199,11 +205,11 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
         return $this->request('POST', 'send-carousel', [
             'json' => array_filter([
                 'instance_id' => $this->getInstanceId($instanceId),
-                'to'          => $to,
-                'cards'       => $cards,
-                'text'        => $text,
-                'footer'      => $footer,
-            ])
+                'to' => $to,
+                'cards' => $cards,
+                'text' => $text,
+                'footer' => $footer,
+            ]),
         ]);
     }
 
@@ -220,11 +226,11 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
         return $this->request('POST', 'send-buttons', [
             'json' => array_filter([
                 'instance_id' => $this->getInstanceId($instanceId),
-                'to'          => $to,
-                'text'        => $text,
-                'buttons'     => $buttons,
-                'footer'      => $footer,
-            ])
+                'to' => $to,
+                'text' => $text,
+                'buttons' => $buttons,
+                'footer' => $footer,
+            ]),
         ]);
     }
 
@@ -242,17 +248,17 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
         return $this->request('POST', 'send-template-buttons', [
             'json' => array_filter([
                 'instance_id' => $this->getInstanceId($instanceId),
-                'to'          => $to,
-                'text'        => $text,
-                'buttons'     => $buttons,
-                'footer'      => $footer,
-                'image_url'   => $imageUrl,
-            ])
+                'to' => $to,
+                'text' => $text,
+                'buttons' => $buttons,
+                'footer' => $footer,
+                'image_url' => $imageUrl,
+            ]),
         ]);
     }
 
     /* -------------------------------------------------------------------------- */
-    /*                              INSTANCES API                                 */
+    /*                              INSTANCES API */
     /* -------------------------------------------------------------------------- */
 
     /**
@@ -271,7 +277,7 @@ class SendzapClient implements \Sendzap\Laravel\Contracts\SendzapClientContract
         return $this->request('POST', 'instances', [
             'json' => [
                 'name' => $name,
-            ]
+            ],
         ]);
     }
 

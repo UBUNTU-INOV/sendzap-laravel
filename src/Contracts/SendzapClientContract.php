@@ -19,4 +19,26 @@ interface SendzapClientContract
     public function sendContact(string $to, string $contactName, string $contactNumber, ?string $organization = null, ?string $instanceId = null): array;
 
     public function sendCarousel(string $to, array $cards, ?string $text = null, ?string $footer = null, ?string $instanceId = null): array;
+
+    public function sendButtons(string $to, string $text, array $buttons, ?string $footer = null, ?string $instanceId = null): array;
+
+    public function sendTemplateButtons(string $to, string $text, array $buttons, ?string $footer = null, ?string $imageUrl = null, ?string $instanceId = null): array;
+
+    public function listInstances(): array;
+
+    public function createInstance(string $name): array;
+
+    public function showInstance(string $instanceId): array;
+
+    public function getQr(string $instanceId): array;
+
+    public function logoutInstance(string $instanceId): array;
+
+    public function reconnectInstance(string $instanceId): array;
+
+    public function deleteInstance(string $instanceId): array;
+
+    public function getGroups(string $instanceId): array;
+
+    public function getContacts(string $instanceId): array;
 }
