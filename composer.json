@@ -2,10 +2,10 @@
     "name": "sendzap/laravel-sdk",
     "description": "A Laravel SDK to interact with the SendZap WhatsApp API.",
     "keywords": ["laravel", "sendzap", "whatsapp", "sdk"],
-    "homepage": "https://github.com/UBUNTU-CENTER/sendzap-laravel",
+    "homepage": "https://github.com/UBUNTU-INOV/sendzap-laravel",
     "support": {
-        "issues": "https://github.com/UBUNTU-CENTER/sendzap-laravel/issues",
-        "source": "https://github.com/UBUNTU-CENTER/sendzap-laravel"
+        "issues": "https://github.com/UBUNTU-INOV/sendzap-laravel/issues",
+        "source": "https://github.com/UBUNTU-INOV/sendzap-laravel"
     },
     "type": "library",
     "license": "MIT",
