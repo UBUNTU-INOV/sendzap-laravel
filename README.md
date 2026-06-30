@@ -1,6 +1,7 @@
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/sendzap/laravel-sdk.svg?style=flat-square)](https://packagist.org/packages/sendzap/laravel-sdk)
-[![Total Downloads](https://img.shields.io/packagist/dt/sendzap/laravel-sdk.svg?style=flat-square)](https://packagist.org/packages/sendzap/laravel-sdk)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+<p align="center">
+  <img src="art/logo_sendzap.png" alt="SendZap Laravel SDK" width="400">
+</p>
+
 # SendZap Laravel SDK
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sendzap/laravel-sdk.svg?style=flat-square)](https://packagist.org/packages/sendzap/laravel-sdk)
