@@ -3,6 +3,7 @@
 namespace Sendzap\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Sendzap\Laravel\SendzapClient;
 
 /**
  * @method static \Sendzap\Laravel\SendzapClient setInstanceId(string $instanceId)
@@ -24,8 +25,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static array deleteInstance(string $instanceId)
  * @method static array getGroups(string $instanceId)
  * @method static array getContacts(string $instanceId)
- * 
- * @see \Sendzap\Laravel\SendzapClient
+ *
+ * @see SendzapClient
  */
 class Sendzap extends Facade
 {

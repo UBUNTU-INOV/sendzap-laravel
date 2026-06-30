@@ -4,3 +4,4 @@ composer.lock
 .vscode/
 .phpunit.result.cache
 .env
+/build/

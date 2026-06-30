@@ -2,6 +2,4 @@
 
 namespace Sendzap\Laravel\Exceptions;
 
-class MissingInstanceIdException extends SendzapException
-{
-}
+class MissingInstanceIdException extends SendzapException {}

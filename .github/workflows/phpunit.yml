@@ -1,4 +1,4 @@
-name: PHP Unit Tests
+name: Tests
 
 on:
   push:
@@ -9,14 +9,56 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.1', '8.2', '8.3', '8.4' ]
+        laravel: [ '10.*', '11.*', '12.*', '13.*' ]
+        exclude:
+          - php: '8.1'
+            laravel: '12.*'
+          - php: '8.1'
+            laravel: '13.*'
+          - php: '8.2'
+            laravel: '13.*'
+
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ matrix.php }}
           extensions: mbstring
-      - name: Validate composer
-        run: composer install --prefer-dist --no-progress --no-suggest
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require "illuminate/support:${{ matrix.laravel }}" --no-update --no-interaction
+          composer update --prefer-dist --no-progress --prefer-stable
+
       - name: Run tests
-        run: vendor/bin/phpunit --configuration phpunit.xml --colors=never
+        run: vendor/bin/phpunit --colors=never
+
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Check code style (Pint)
+        run: vendor/bin/pint --test
+
+      - name: Run static analysis (PHPStan)
+        run: vendor/bin/phpstan analyse --error-format=github

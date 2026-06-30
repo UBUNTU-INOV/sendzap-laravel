@@ -2,6 +2,4 @@
 
 namespace Sendzap\Laravel\Exceptions;
 
-class ApiException extends SendzapException
-{
-}
+class ApiException extends SendzapException {}

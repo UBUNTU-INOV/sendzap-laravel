@@ -29,7 +29,7 @@ class InstallCommand extends Command
         $this->line('<fg=green> |____/ \___|_| |_|\__,_/_____\__,_| .__/  </>');
         $this->line('<fg=green>                                   |_|     </>');
         $this->line('');
-        
+
         $this->info('Installing SendZap Laravel SDK...');
 
         // Publish config file
@@ -44,9 +44,9 @@ class InstallCommand extends Command
         // Check if SENDZAP_API_KEY already exists in .env
         if (file_exists(base_path('.env'))) {
             $envContent = file_get_contents(base_path('.env'));
-            
-            if (!str_contains($envContent, 'SENDZAP_API_KEY')) {
-                file_put_contents(base_path('.env'), PHP_EOL . 'SENDZAP_API_KEY=' . PHP_EOL . 'SENDZAP_BASE_URL=https://api.sendzap.click/api/v1' . PHP_EOL . 'SENDZAP_DEFAULT_INSTANCE_ID=' . PHP_EOL, FILE_APPEND);
+
+            if (! str_contains($envContent, 'SENDZAP_API_KEY')) {
+                file_put_contents(base_path('.env'), PHP_EOL.'SENDZAP_API_KEY='.PHP_EOL.'SENDZAP_BASE_URL=https://api.sendzap.click/api/v1'.PHP_EOL.'SENDZAP_DEFAULT_INSTANCE_ID='.PHP_EOL, FILE_APPEND);
                 $this->info('Environment variables successfully added to .env!');
             } else {
                 $this->warn('SENDZAP_API_KEY already exists in your .env file.');

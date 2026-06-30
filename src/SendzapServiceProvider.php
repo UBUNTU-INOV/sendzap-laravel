@@ -14,11 +14,12 @@ class SendzapServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Merge configuration
-        $this->mergeConfigFrom(__DIR__ . '/../config/sendzap.php', 'sendzap');
+        $this->mergeConfigFrom(__DIR__.'/../config/sendzap.php', 'sendzap');
 
         // Bind the client (string alias for facade) and the contract for DI
         $this->app->singleton('sendzap', function ($app) {
             $config = $app['config']['sendzap'];
+
             return new SendzapClient(
                 $config['api_key'] ?? '',
                 $config['base_url'] ?? 'https://api.sendzap.click/api/v1',
@@ -39,7 +40,7 @@ class SendzapServiceProvider extends ServiceProvider
         // Publish configuration
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/sendzap.php' => config_path('sendzap.php'),
+                __DIR__.'/../config/sendzap.php' => config_path('sendzap.php'),
             ], 'sendzap-config');
 
             // Register commands
